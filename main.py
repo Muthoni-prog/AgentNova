@@ -3,6 +3,7 @@ import time
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import os
 import uvicorn
 from src.track_whales import check_latest_whale_tx
@@ -28,6 +29,13 @@ def start_agent():
 # 🌐 FastAPI Web Server
 # =========================
 app = FastAPI(title="AgentNova", version="1.0.0")
+
+# Serve static files for Verisense agent.json
+app.mount(
+    "/.well-known",
+    StaticFiles(directory="src/.well-known"),
+    name="well-known"
+)
 
 @app.get("/")
 def root():
