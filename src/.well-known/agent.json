@@ -1,18 +1,45 @@
-{
-  "name": "AgentNova",
-  "description": "An autonomous AI agent that tracks and analyzes whale transactions on Ethereum in real-time.",
-  "version": "1.0.0",
-  "author": "Muthoni-prog",
-  "repository": "https://github.com/Muthoni-prog/AgentNova",
-  "deployment": "https://agentnova-production.up.railway.app",
-  "capabilities": [
-    "autonomous-analysis",
-    "blockchain-monitoring",
-    "discord-notifications"
-  ],
-  "language": "Python",
-  "framework": "FastAPI",
-  "category": "Analytical Agent",
-  "a2a_compatible": true,
-  "license": "MIT"
-}
+from fastapi import FastAPI
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
+import os
+import uvicorn
+import time
+from src.track_whales import check_latest_whale_tx
+
+load_dotenv()
+
+app = FastAPI(title="AgentNova", version="1.0.0")
+
+# 🚀 Serve the .well-known directory statically
+if not os.path.exists("src/.well-known"):
+    os.makedirs("src/.well-known", exist_ok=True)
+
+app.mount("/.well-known", StaticFiles(directory="src/.well-known"), name="well-known")
+
+
+@app.get("/")
+def root():
+    return {"status": "AgentNova is online and operational"}
+
+
+# 🧠 Fallback in case file missing
+@app.get("/.well-known/agent.json")
+def agent_card():
+    file_path = "src/.well-known/agent.json"
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="application/json")
+    else:
+        return JSONResponse({"error": "agent.json not found"})
+
+
+def start_agent():
+    """Continuously monitors whale transactions every 5 minutes."""
+    while True:
+        check_latest_whale_tx()
+        time.sleep(300)
+
+
+if __name__ == "__main__":
+    print("🚀 AgentNova is now running continuously...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
