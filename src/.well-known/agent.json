@@ -1,0 +1,18 @@
+{
+  "name": "AgentNova",
+  "description": "An autonomous AI agent that tracks and analyzes whale transactions on Ethereum in real-time.",
+  "version": "1.0.0",
+  "author": "Muthoni-prog",
+  "repository": "https://github.com/Muthoni-prog/AgentNova",
+  "deployment": "https://agentnova-production.up.railway.app",
+  "capabilities": [
+    "autonomous-analysis",
+    "blockchain-monitoring",
+    "discord-notifications"
+  ],
+  "language": "Python",
+  "framework": "FastAPI",
+  "category": "Analytical Agent",
+  "a2a_compatible": true,
+  "license": "MIT"
+}

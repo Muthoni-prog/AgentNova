@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import time
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
+import os
 import uvicorn
 from src.track_whales import check_latest_whale_tx
 
@@ -33,25 +35,8 @@ def root():
 
 @app.get("/.well-known/agent.json")
 def agent_card():
-    data = {
-        "name": "AgentNova",
-        "description": "An autonomous AI agent that tracks and analyzes whale transactions on Ethereum in real-time.",
-        "version": "1.0.0",
-        "author": "Muthoni-prog",
-        "repository": "https://github.com/Muthoni-prog/AgentNova",
-        "deployment": "https://agentnova-production.up.railway.app",
-        "capabilities": [
-            "autonomous-analysis",
-            "blockchain-monitoring",
-            "discord-notifications"
-        ],
-        "language": "Python",
-        "framework": "FastAPI",
-        "category": "Analytical Agent",
-        "a2a_compatible": True,
-        "license": "MIT"
-    }
-    return JSONResponse(data)
+    file_path = os.path.join("src", ".well-known", "agent.json")
+    return FileResponse(file_path)
 
 
 # =========================
