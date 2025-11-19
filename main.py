@@ -1,8 +1,7 @@
 from dotenv import load_dotenv
 import time
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 import os
 import uvicorn
@@ -17,6 +16,7 @@ load_dotenv()
 # 🚀 Continuous Monitoring
 # =========================
 print("🚀 AgentNova is now running continuously...")
+
 
 def start_agent():
     """Continuously monitors whale transactions every 5 minutes."""
@@ -37,14 +37,40 @@ app.mount(
     name="well-known"
 )
 
+
 @app.get("/")
 def root():
     return {"status": "AgentNova is online and operational"}
 
+
 @app.get("/.well-known/agent.json")
 def agent_card():
+    """Serve AgentNova's metadata for Verisense registration."""
     file_path = os.path.join("src", ".well-known", "agent.json")
-    return FileResponse(file_path)
+
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="application/json")
+    else:
+        # fallback JSON response (in case file missing)
+        data = {
+            "name": "AgentNova",
+            "description": "An autonomous AI agent that tracks and analyzes whale transactions on Ethereum in real-time.",
+            "version": "1.0.0",
+            "author": "Muthoni-prog",
+            "repository": "https://github.com/Muthoni-prog/AgentNova",
+            "deployment": "https://agentnova-production.up.railway.app",
+            "capabilities": [
+                "autonomous-analysis",
+                "blockchain-monitoring",
+                "discord-notifications"
+            ],
+            "language": "Python",
+            "framework": "FastAPI",
+            "category": "Analytical Agent",
+            "a2a_compatible": True,
+            "license": "MIT"
+        }
+        return JSONResponse(data)
 
 
 # =========================
@@ -53,6 +79,6 @@ def agent_card():
 if __name__ == "__main__":
     # Start the FastAPI server
     uvicorn.run("main:app", host="0.0.0.0", port=8000)
-    # Optionally start the background monitoring
-    # Uncomment below line if you want both server and background agent running together
+    # Optionally start background monitoring
+    # Uncomment below if you want both server and background agent running together
     # start_agent()
